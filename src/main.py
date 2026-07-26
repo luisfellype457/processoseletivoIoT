@@ -74,4 +74,4 @@ while True:
         if not alarme_porta and not alarme_temp:
             print("Status: Sistema Normalizado.")
 
-    time.sleep_ms(100)
+    time.sleep_ms(50)
