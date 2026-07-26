@@ -62,16 +62,12 @@ while True:
         alarme_temp = True
         led_temp.value(1)
 
-    if alarme_porta or alarme_temp:  #tratamento de alarme
-        if porta == 1:
-            alarme_porta = False
-            led_porta.value(0)
-            
-        if delta < LIMITE_VARIACAO_Y and alarme_temp:
-            alarme_temp = False
-            led_temp.value(0)
+    if porta == 1 and delta < LIMITE_VARIACAO_Y and (alarme_porta or alarme_temp):
+        print("Status: Sistema Normalizado.")
+        alarme_porta = False
+        alarme_temp = False
+        led_porta.value(0)
+        led_temp.value(0)
+        temperatura_ref = temperatura
 
-        if not alarme_porta and not alarme_temp:
-            print("Status: Sistema Normalizado.")
-
-    time.sleep_ms(50)
+    time.sleep(0.05)
