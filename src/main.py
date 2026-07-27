@@ -33,10 +33,18 @@ alarme_temp = False
 led_porta.value(0)
 led_temp.value(0)
 
+ultimo_botao = 0
+
 print("Sistema de Monitoramento Inicializado")
 
-while True:
-    porta = btn1.value() #1 - Fechada \ 0 - Aberta
+while True:    
+    if btn1.value() == 1:
+        ultimo_botao = time.ticks_ms()
+        if time.ticks_diff(ultimo_botao, time.ticks_ms()) > 200:
+            porta = 1
+    else:
+        porta = 0
+
     temperatura = ler_temperatura()
     
     delta = temperatura - temperatura_ref
@@ -57,7 +65,6 @@ while True:
         porta_aberta_antes = False
 
     if delta >= LIMITE_VARIACAO_Y and not alarme_temp:  #acende alarme térmico
-        time.sleep(1.2)
         alarme_temp = True
         led_temp.value(1)
         print("ALERTA: Degradacao termica detectada!")
