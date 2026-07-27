@@ -59,7 +59,9 @@ while True:
         led_temp.value(1)
         print("ALERTA: Degradacao termica detectada!")
 
+
     if porta == 1 and delta < LIMITE_VARIACAO_Y and (alarme_porta or alarme_temp):
+        time.sleep(0.6)
         alarme_porta = False
         alarme_temp = False
         led_porta.value(0)
