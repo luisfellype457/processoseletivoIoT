@@ -31,6 +31,7 @@ alarme_temp = False
 led_porta.value(0)
 led_temp.value(0)
 
+time.sleep(0.6)
 print("Sistema de Monitoramento Inicializado")
 
 while True:
@@ -49,6 +50,7 @@ while True:
         if tempo >= LIMITE_TEMPO_X and not alarme_porta: #acende alarme da porta
             alarme_porta = True
             led_porta.value(1)
+            time.sleep(0.6)
             print("ALERTA: Porta aberta por muito tempo!")
 
     else:
@@ -57,16 +59,17 @@ while True:
     if delta >= LIMITE_VARIACAO_Y and not alarme_temp:  #acende alarme térmico
         alarme_temp = True
         led_temp.value(1)
+        time.sleep(0.6)
         print("ALERTA: Degradacao termica detectada!")
 
 
     if porta == 1 and delta < LIMITE_VARIACAO_Y and (alarme_porta or alarme_temp):
-        time.sleep(0.6)
         alarme_porta = False
         alarme_temp = False
         led_porta.value(0)
         led_temp.value(0)
         temperatura_ref = temperatura
+        time.sleep(0.6)
         print("Status: Sistema Normalizado.")
 
     time.sleep(0.05)
