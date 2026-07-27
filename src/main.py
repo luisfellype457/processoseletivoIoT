@@ -21,8 +21,6 @@ def ler_temperatura():
     temperatura = (temperatura/340.0) + 36.53 #fórmula pra converter em graus celsius
     return temperatura
 
-print("Sistema de Monitoramento Inicializado")
-
 porta_aberta_antes = False 
 tempo_abertura = 0
 temperatura_ref = ler_temperatura()
@@ -33,12 +31,11 @@ alarme_temp = False
 led_porta.value(0)
 led_temp.value(0)
 
+print("Sistema de Monitoramento Inicializado")
+
 while True:
     porta = btn1.value() #1 - Fechada \ 0 - Aberta
     temperatura = ler_temperatura()
-
-    if porta == 1 and not alarme_porta and not alarme_temp:
-        temperatura_ref = temperatura
     
     delta = abs(temperatura - temperatura_ref) #pega a variação (positiva ou negativa)
 
@@ -50,24 +47,24 @@ while True:
         tempo = time.ticks_diff(time.ticks_ms(), tempo_abertura)
 
         if tempo >= LIMITE_TEMPO_X and not alarme_porta: #acende alarme da porta
-            print("ALERTA: Porta aberta por muito tempo!")
             alarme_porta = True
             led_porta.value(1)
+            print("ALERTA: Porta aberta por muito tempo!")
 
     else:
         porta_aberta_antes = False
 
     if delta >= LIMITE_VARIACAO_Y and not alarme_temp:  #acende alarme térmico
-        print("ALERTA: Degradacao termica detectada!")
         alarme_temp = True
         led_temp.value(1)
+        print("ALERTA: Degradacao termica detectada!")
 
     if porta == 1 and delta < LIMITE_VARIACAO_Y and (alarme_porta or alarme_temp):
-        print("Status: Sistema Normalizado.")
         alarme_porta = False
         alarme_temp = False
         led_porta.value(0)
         led_temp.value(0)
         temperatura_ref = temperatura
+        print("Status: Sistema Normalizado.")
 
     time.sleep(0.05)
