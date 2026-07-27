@@ -274,71 +274,68 @@ Preencha todas as seções abaixo de forma **clara, objetiva e técnica**.
 
 ### Identificação do Candidato
 
-- **Nome completo:**
-- **GitHub:**
+- **Nome completo:** Luís Fellype Magalhães Cruz
+- **GitHub:** https://github.com/luisfellype457/
 
 ---
 
 ## Visão Geral da Solução
 
-Descreva, em poucas palavras:
-
-- Qual é o objetivo do seu projeto
-- O que o sistema embarcado simulado faz
-- Como o usuário interage com ele (se aplicável)
+O objetivo é simular um ambiente refrigerado, no qual atuam sensores e alarmes que indicam se a porta está aberta após um período de tempo definido pelo usuário e se a temperatura teve uma degradação após uma tolerância (também definida pelo usuário). No simulador _Wokwi_, o usuário se depada com o sistema, em que pode interagir com um botão que simula a porta do refrigerador e com o sensor de temperatura para definir sua variação.
 
 ---
 
 ## Arquitetura do Sistema Embarcado
 
-Explique a arquitetura lógica do seu projeto, abordando:
+**Fluxo principal:**
 
-- Fluxo principal do programa (`main.py`)
-- Estrutura de estados, loops ou temporizações
-- Como os componentes interagem entre si
+O programa inicia configurando os pinos de entrada e saída, a comunicação I2C e o sensor MPU6050. Após isso, realiza a primeira leitura da temperatura, que servirá como referência para futuras comparações. Depois da inicialização, entra em um laço "_while True_", onde verifica continuamente o estado do botão (porta) e a temperatura, atualizando os alarmes sempre que necessário.
 
-Se desejar, utilize tópicos ou um pequeno diagrama em texto.
+Para controlar os eventos, foram utilizadas variáveis que indicam se a porta já estava aberta e se algum alarme está ativo.
+
+O laço de repetição segue os seguintes passos:
+
+- Verifica se o botão indica que a porta está aberta ou fechada.
+- Lê a temperatura atual do sensor MPU6050.
+- Compara a temperatura atual com a temperatura de referência.
+- Caso a porta permaneça aberta, inicia um cronômetro e verifica se o tempo excedeu o limite permitido.
+- Se a porta ficar aberta por tempo excessivo, acende o LED correspondente e exibe uma mensagem de alerta.
+- Quando a porta é fechada, a temperatura atual passa a ser a nova referência para as próximas comparações.
+- Verifica se a variação de temperatura ultrapassou o limite estabelecido.
+- Caso a temperatura aumente além do permitido, acende o LED de temperatura e exibe uma mensagem de alerta.
+- Se a porta estiver fechada e a temperatura voltar ao valor esperado, desliga os LEDs, limpa os alarmes e atualiza a temperatura de referência.
+- Aguarda 50 ms antes de reiniciar o ciclo.
 
 ---
 
 ## Componentes Utilizados na Simulação
 
-Liste os principais componentes definidos no `diagram.json`, por exemplo:
-
-- Tipo de placa utilizada
-- LEDs, botões, sensores, atuadores, etc.
-- Função de cada componente no sistema
+- **Placa ESP32 (devkit v4):** controla e coordena todas as atividades do sistema.
+- **Botão (btn1):** simula o estado da porta (aberta ou fechada).
+- **Sensor MPU6050:** fornece a temperatura utilizada para detectar variações térmicas.
+- **LED da porta (vermelho):** acende quando a porta permanece aberta por mais tempo que o limite definido.
+- **LED de temperatura (azul):** acende quando a temperatura aumenta acima da variação permitida.
+- **2 Resistores de 1kOhm:** evita a sobrecarga de corrente em cada led.
 
 ---
 
 ## Decisões Técnicas Relevantes
 
-Explique brevemente decisões importantes tomadas durante o desenvolvimento, como:
+A primeira decisão ao iniciar o projeto foi evitar bibliotecas externas afim de otimizar o projeto (tanto para facilitar o manuseio local, quanto para fazer o upload para o Actions do Github).
 
-- Organização do código
-- Uso de funções, estados ou constantes
-- Estratégias para temporização ou controle lógico
-
+O código foi organizado com comentários para melhor leitura de fluxo. Dito isso, no começo, se econtram a inclusão de bibliotecas (_from machine import Pin, I2C_ e _import time_), necessárias para o restante do código. Logo após, são incluídas as variáveis globais (limite de tempo e variação de temperatura) para o usuário ter a preferência de escolha para a simulação. Depois, os dispositivos são instanciados para seus respectivos Pins, e então o sensor é iniciado através de seu endereço no _I2C_. A função para ler temperatura foi feita manualmente, manipulando bytes. Foram declaradas as variáveis necessárias e então o laço _while True_ implementa os cálculos de temperatura e energização de leds e prints.
 ---
 
 ## Resultados Obtidos
 
-Descreva o comportamento final do sistema:
-
-- O que funciona corretamente
-- Quais requisitos foram atendidos
-- Resultado observado na simulação do Wokwi
+O sistema funcionou bem e após alguns reparos, passou em todos os testes no Github Actions. Livre para quaisquer experimentos.
 
 ---
 
 ## Comentários Adicionais (Opcional)
 
-Utilize este espaço para comentar, se desejar:
-
-- Dificuldades encontradas
-- Limitações da solução
-- Melhorias que você faria com mais tempo
-- Principais aprendizados durante o desafio
+Algumas dificuldades foram para compreender a manipulação de bytes necessária para criar a função de ler a temperatura do sensor e a armazenar em uma variável. Além de criar uma lógica para ler a temperatura de referência quando o dispositivo estiver em estado estável.
+Dito isso, foram aprendidos bastante conceitos e soluçõese em que nunca tinha tido contato antes com esse projeto.
 
 ---
 
