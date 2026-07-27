@@ -57,6 +57,7 @@ while True:
         porta_aberta_antes = False
 
     if delta >= LIMITE_VARIACAO_Y and not alarme_temp:  #acende alarme térmico
+        time.sleep(1.2)
         alarme_temp = True
         led_temp.value(1)
         print("ALERTA: Degradacao termica detectada!")
