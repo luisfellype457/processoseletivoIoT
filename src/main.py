@@ -13,6 +13,8 @@ end_mpu = 0x68 #endereço do mpu no i2c
 
 i2c.writeto_mem(end_mpu, 0x6B, b'\x00') #iniciando o mpu
 
+time.sleep(0.5)
+
 def ler_temperatura():
     temp_bytes = i2c.readfrom_mem(end_mpu, 0x41, 2) #guardando temperatura em 0x41 e 0x42 (a temperatura tem 16 bits, mas só consegue guardar 8 por vez)
     temperatura = (temp_bytes[0] << 8) | temp_bytes[1]  #juntando as duas metades da leitura
@@ -61,12 +63,12 @@ while True:
 
 
     if porta == 1 and delta < LIMITE_VARIACAO_Y and (alarme_porta or alarme_temp):
+        time.sleep(0.6)
         alarme_porta = False
         alarme_temp = False
         led_porta.value(0)
         led_temp.value(0)
         temperatura_ref = temperatura
-        time.sleep(0.6)
         print("Status: Sistema Normalizado.")
 
     time.sleep(0.05)
