@@ -31,14 +31,13 @@ alarme_temp = False
 led_porta.value(0)
 led_temp.value(0)
 
-time.sleep(0.6)
 print("Sistema de Monitoramento Inicializado")
 
 while True:
     porta = btn1.value() #1 - Fechada \ 0 - Aberta
     temperatura = ler_temperatura()
     
-    delta = abs(temperatura - temperatura_ref) #pega a variação (positiva ou negativa)
+    delta = temperatura - temperatura_ref
 
     if not porta:
         if not porta_aberta_antes: #começa o cronômetro
@@ -50,7 +49,6 @@ while True:
         if tempo >= LIMITE_TEMPO_X and not alarme_porta: #acende alarme da porta
             alarme_porta = True
             led_porta.value(1)
-            time.sleep(0.6)
             print("ALERTA: Porta aberta por muito tempo!")
 
     else:
@@ -59,7 +57,6 @@ while True:
     if delta >= LIMITE_VARIACAO_Y and not alarme_temp:  #acende alarme térmico
         alarme_temp = True
         led_temp.value(1)
-        time.sleep(0.6)
         print("ALERTA: Degradacao termica detectada!")
 
 
